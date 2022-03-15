@@ -1,10 +1,16 @@
-import { Grid, Card, CardContent, Typography, Box, Link } from "@mui/material"
+import { useState } from 'react'
+import { Grid, Card, CardContent, Typography, Box, Link, InputLabel, Select, FormControl, MenuItem, Divider } from "@mui/material"
 import Layout from "../../components/Layout"
 import { styled } from '@mui/material/styles';
 import axios from "axios";
 import { useRouter } from 'next/router'
+import AverageReview from "../../components/AverageReview";
 
-const Category = ({ category }) => {
+const Category = ({ category, averageReviews }) => {
+
+    const [price, setPrice] = useState(null)
+    const [numReviews, setNumReviews] = useState(null)
+    const [avgReview, setAvgReview] = useState(averageReviews)
 
     const router = useRouter()
 
@@ -16,6 +22,66 @@ const Category = ({ category }) => {
         <Layout>
             <CustomGrid container>
                 <Grid item xs={12} md={3}>
+                    <Box>
+                        <Grid container>
+                            <Grid item xs={12}>
+                                <Typography variant="h5">Filter the results</Typography>
+                                <Divider />
+                            </Grid>
+                        </Grid>
+                        <Grid container>
+                            <Grid item xs={12}>
+                                <FormControl fullWidth>
+                                    <InputLabel id="price">Price</InputLabel>
+                                    <Select 
+                                        labelId="price"
+                                        id="priceInput"
+                                        label="price"
+                                        value={price}
+                                        onChange={e => setPrice(e.target.value)}
+                                    >
+                                        <MenuItem value={"$"}>Very cheap</MenuItem>
+                                        <MenuItem value={"$$"}>Cheap</MenuItem>
+                                        <MenuItem value={"$$$"}>Moderate</MenuItem>
+                                        <MenuItem value={"$$$$"}>Expensive</MenuItem>
+                                        <MenuItem value={"$$$$$"}>Very expensive</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <FormControl fullWidth>
+                                    <InputLabel id="numReviews">Number of Reviews</InputLabel>
+                                    <Select 
+                                        labelId="numReviews"
+                                        id="numReviewsInput"
+                                        label="Number of Reviews"
+                                        value={numReviews}
+                                        onChange={e => setNumberReviews(e.target.value)}
+                                    >
+                                        <MenuItem value={5}>+</MenuItem>
+                                        <MenuItem value={10}>10+</MenuItem>
+                                        <MenuItem value={15}>15+</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <FormControl fullWidth>
+                                    <InputLabel id="avgReview">Average Review</InputLabel>
+                                    <Select 
+                                        labelId="avgReview"
+                                        id="avgReviewInput"
+                                        label="Average Review"
+                                        value={avgReview}
+                                        onChange={e => setAvgReview(e.target.value)}
+                                    >
+                                        <MenuItem value={3}>3+</MenuItem>
+                                        <MenuItem value={4}>4+</MenuItem>
+                                        <MenuItem value={5}>5+</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+                        </Grid>
+                    </Box>
                 </Grid>
                 <CustomGrid item xs={12} md={9}>
                     { category ?
@@ -42,9 +108,7 @@ const Category = ({ category }) => {
                                             </Description>
                                         </BusinessGridItem>
                                         <BusinessGridItem item xs={6}>
-                                            <Typography variant="h5">
-                                                Reviews
-                                            </Typography>
+                                            <AverageReview value={averageReviews[business.url]} />
                                             <Typography variant="subititle1">
                                                 {business.hours}
                                             </Typography>
@@ -89,9 +153,25 @@ const { data } = await axios.get(`http://localhost:8000/categories?slug=${slug}`
 
 console.log(data.results[0])
 
+let averageReviews = {}
+
+if (data && data.results && data.results[0].business) {
+  for (let i = 0; i < data.results[0].business.length; i++) {
+    let totalReviewsStars = 0;
+    for (let j = 0; j < data.results[0].business[i].reviews.length; j++) {
+      totalReviewsStars = totalReviewsStars + Number(data.results[0].business[i].reviews[j].stars)
+    }
+
+    const inverse = 1 / 2
+
+    averageReviews[data.results[0].business[i].url] = Math.round((totalReviewsStars / data.results[0].business[i].reviews.length) / inverse) * inverse
+  }
+}
+
 return {
     props: {
-    category: data.results[0] || null
+    category: data.results[0] || null,
+    averageReviews: averageReviews
     }
 }
 }

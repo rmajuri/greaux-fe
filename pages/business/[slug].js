@@ -5,7 +5,7 @@ import axios from "axios";
 // import { useRouter } from 'next/router'
 import AverageReview from "../../components/AverageReview";
 
-const Business = ({ business }) => {
+const Business = ({ business, averageReview }) => {
 
     // const router = userRouter()
 
@@ -19,7 +19,7 @@ const Business = ({ business }) => {
                 <Grid item xs={12} md={6}>
                     <Typography variant="h2">{business.name}</Typography>
                     <Typography variant="h4">{business.price_range}</Typography>
-                    <AverageReview value={3} />
+                    <AverageReview value={averageReview} />
 
                     <div>
                         <Button variant="contained" color="primary">Write a review</Button>
@@ -65,9 +65,24 @@ export async function getServerSideProps({query: {slug}}) {
 
     console.log(data.results[0])
 
+    let averageReview = null;
+
+    if (data && data.results && data.results[0].reviews) {
+        let totalReviewsStars = 0;
+
+        for (let i = 0; i < data.results[0].reviews.length; i++) {
+            totalReviewsStars = totalReviewsStars + Number(data.results[0].reviews[i].stars)
+        }
+
+        const inverse = 1 / 2
+
+        averageReview = Math.round((totalReviewsStars / data.results[0].reviews.length / inverse) * inverse)
+    }
+
     return {
         props: {
-        business: data.results[0] || null
+        business: data.results[0] || null,
+        averageReview: averageReview
         }
     }
 }
