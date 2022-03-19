@@ -41,6 +41,15 @@ const AverageReview = ({ value }) => {
                     <StarOutlineIcon />
                 )
             }
+            {
+                value >= 5 ? (
+                    <StarIcon />
+                ) : value >= 4.5 ? (
+                    <StarHalfIcon />
+                ) : (
+                    <StarOutlineIcon />
+                )
+            }
         </div>
     )
 }

@@ -11,7 +11,7 @@ export default function Home({ categories }) {
     <Layout>
       <CustomGrid container spacing={3}>
         {categories.map(category=> (
-                  <CustomGridItem item xs={12} md={4}>
+                  <CustomGridItem item xs={12} md={4} key={category.url}>
                     <CustomCard onClick={() => router.push(`/categories/${category.slug}`)}>
                       <CardHeader avatar={
                         <Avatar aria-label='category'>C</Avatar>

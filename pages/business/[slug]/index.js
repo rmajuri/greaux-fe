@@ -1,9 +1,9 @@
 import { Grid, Card, Typography, Button, List, ListItem, ListItemText } from "@mui/material"
-import Layout from "../../components/Layout"
+import Layout from "../../../components/Layout"
 import { styled } from '@mui/material/styles';
 import axios from "axios";
 // import { useRouter } from 'next/router'
-import AverageReview from "../../components/AverageReview";
+import AverageReview from "../../../components/AverageReview";
 
 const Business = ({ business, averageReview }) => {
 
