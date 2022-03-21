@@ -1,17 +1,13 @@
-import { Grid, Card, Typography, Button, List, ListItem, ListItemText } from "@mui/material"
+import { useState } from 'react'
+import { Avatar, Box, Button, Card, CardContent, Grid, Divider, FormControl, InputLabel, Select, MenuItem, Link, List, ListItem, ListItemAvatar, ListItemText, makeStyles, Typography } from "@mui/material"
 import Layout from "../../../components/Layout"
 import { styled } from '@mui/material/styles';
 import axios from "axios";
-// import { useRouter } from 'next/router'
 import AverageReview from "../../../components/AverageReview";
 
 const Business = ({ business, averageReview }) => {
 
-    // const router = userRouter()
-
-    // const handleBusinessClick = business => {
-    //     router.push(`/business/${business.slug}`)
-    // }
+    const [reviewFilter, setReviewFilter] = useState('')
 
     return (
         <Layout>
@@ -53,6 +49,58 @@ const Business = ({ business, averageReview }) => {
                     </Card>
                 </Grid>
             </CustomGrid>
+
+            <Grid container>
+                <Grid item xs={12} md={3}>
+                <Box>
+                    <Grid container>
+                    <Grid item xs={12}>
+                        <Typography variant='h5'>Filter the Reviews</Typography>
+                        <Divider />
+                    </Grid>
+
+                    <Grid item xs={12}>
+                        <FormControl fullWidth>
+                        <InputLabel id='reviews'>Review</InputLabel>
+                        <Select
+                            labelId='reviews'
+                            id='reviewsComponent'
+                            value={reviewFilter}
+                            onChange={e => setReviewFilter(e.target.value)}
+                        >
+                            <MenuItem value={0}>0+ Stars</MenuItem>
+                            <MenuItem value={1}>1+ Stars</MenuItem>
+                            <MenuItem value={2}>2+ Stars</MenuItem>
+                            <MenuItem value={3}>3+ Stars</MenuItem>
+                            <MenuItem value={4}>4+ Stars</MenuItem>
+                            <MenuItem value={5}>5 Stars</MenuItem>
+                        </Select>
+                        </FormControl>
+                    </Grid>
+
+                    <Grid item>
+                        <Button variant='outlined' color='secondary' onClick={() => setReviewFilter('')}>Clear Filters</Button>
+                    </Grid>
+                    </Grid>
+                </Box>
+                </Grid>
+
+                <Grid item xs={12} md={8}>
+                {business && business.reviews && business.reviews.map(review => (
+                    reviewFilter <= review.stars && (
+                    <Card>
+                        <Box>
+                        <CardContent>
+                            <AverageReview value={review.stars} />
+                            <Typography variant='h5'>{review.title}</Typography>
+                            <Typography variant='subtitle1'>{review.content}</Typography>
+                        </CardContent>
+                        </Box>
+                    </Card>
+                    )
+                    ))}
+                </Grid>
+            </Grid>
         </Layout>
     )
 }
