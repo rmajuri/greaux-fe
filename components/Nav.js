@@ -45,7 +45,7 @@ const Nav = () => {
                                         <ListItemText primary='Sign Out' />
                                     </ListItem>
                                     ) : (
-                                        <ListItem button onClick={() => router.push('/login')}>
+                                        <ListItem button onClick={() => router.push('/account/login')}>
                                             <ListItemIcon><AccountCircleIcon /></ListItemIcon>
                                             <ListItemText primary='Sign In' />
                                         </ListItem>
