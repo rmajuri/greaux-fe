@@ -10,7 +10,7 @@ export default function Home({ categories }) {
   return (
     <Layout>
       <CustomGrid container spacing={3}>
-        {categories.map(category=> (
+        {categories ? categories.map(category=> (
                   <CustomGridItem item xs={12} md={4} key={category.url}>
                     <CustomCard onClick={() => router.push(`/categories/${category.slug}`)}>
                       <CardHeader avatar={
@@ -21,7 +21,7 @@ export default function Home({ categories }) {
                       />
                     </CustomCard>
                 </CustomGridItem>
-        ))
+        )) : null
         }
       </CustomGrid>
     </Layout>
@@ -46,11 +46,21 @@ const CustomCard = styled(Card)(() => ({
 }));
 
 export async function getServerSideProps() {
-  const { data } = await axios.get('http://localhost:8000/categories')
+
+  let categoryData
+
+  try {
+    const { data } = await axios.get('http://localhost:8000/categories')
+    categoryData = data.results
+  } catch(error) {
+    console.log('ASS:', error)
+
+  }
+
 
   return {
     props: {
-      categories: data.results
+      categories: categoryData || null
     }
   }
 }
