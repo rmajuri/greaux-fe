@@ -4,22 +4,27 @@ import Layout from '../../components/Layout'
 import AuthenticationContext from '../../context/AuthenticationContext'
 import Link from 'next/link'
 
-const Login = ({  }) => {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
+const Register = ({  }) => {
+    const [username, setUsername] = useState('')
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [password2, setPassword2] = useState('')
 
-  const {login} = useContext(AuthenticationContext)
+  const {register} = useContext(AuthenticationContext)
 
   const submitHandler = e => {
+    if (password !== password2) {
+        console.error('passwords do not match')
+    }
   	e.preventDefault();
-  	login({username, password})
+  	register({username, email, password})
   }
 
   return (
     <Layout>
     <div>
       <div>
-        <Typography variant='h3'>Login</Typography>
+        <Typography variant='h3'>Register</Typography>
         <Card>
           <CardContent>
             <form onSubmit={submitHandler}>
@@ -28,7 +33,15 @@ const Login = ({  }) => {
               </div>
 
               <div>
+                <TextField label='Email' fullWidth onChange={e => setEmail(e.target.value)} value={email} />
+              </div>
+
+              <div>
                 <TextField label='Password' inputProps={{ 'type': 'password' }} fullWidth onChange={e => setPassword(e.target.value)} value={password} />
+              </div>
+
+              <div>
+                <TextField label='Confirm Password' inputProps={{ 'type': 'password' }} fullWidth onChange={e => setPassword2(e.target.value)} value={password2} />
               </div>
 
               <div>
@@ -36,8 +49,8 @@ const Login = ({  }) => {
               </div>
 
               <div>
-                <Link href='/account/register'>
-                  <a>Don&apos;t have an account? Sign Up</a>
+                <Link href='/account/login'>
+                  <a>Already have an account? Sign In</a>
                 </Link>
               </div>
             </form>
@@ -49,4 +62,4 @@ const Login = ({  }) => {
   )
 }
 
-export default Login
+export default Register
